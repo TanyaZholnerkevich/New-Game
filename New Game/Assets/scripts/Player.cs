@@ -10,6 +10,9 @@ public class Player : MonoBehaviour
     public float force = 5.0f;
     public float acceleration = 10.0f;
 
+    [SerializeField] private AudioSource audio;
+    private bool isGround = false;
+
 
     private void Awake()
     {
@@ -23,13 +26,18 @@ public class Player : MonoBehaviour
             rb.AddForce(Vector3.up * force , ForceMode.Impulse);
         }
     }
-    /*private void OnCollisionEnter2D(Collision2D col)
+    private void OnCollisionEnter(Collision col)
     {
+        if (col.gameObject.CompareTag("coin"))
+        {
+            Destroy(col.gameObject);
+            audio.Play();
+        }
         if (col.gameObject.CompareTag("cube"))
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            isGround = true;
         }
-    }*/
+    }
     private void Update()
     {
 
@@ -48,6 +56,15 @@ public class Player : MonoBehaviour
         if (Input.GetKey(KeyCode.DownArrow))
         {
             rb.AddForce(Vector3.right* acceleration);
+        }
+        if (isGround)
+        {
+            Time.timeScale = 0;
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                Time.timeScale = 1;
+            }
         }
     }
  }
